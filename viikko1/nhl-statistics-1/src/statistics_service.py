@@ -1,12 +1,7 @@
-from player_reader import PlayerReader
-
-
-
 class StatisticsService:
-    def __init__(self):
-        reader = PlayerReader()
-
-        self._players = reader.get_players()
+    def __init__(self, reader):
+        self.reader = reader
+        self._players = self.reader.get_players()
 
     def search(self, name):
         for player in self._players:
