@@ -18,7 +18,9 @@ def main():
     nationality = "FIN"
     print("Players from", nationality)
 
-    for player in filter(lambda p: p.nationality == nationality, players):
+    for player in sorted(
+            filter(lambda p: p.nationality == nationality, players),
+            key=lambda p: p.goals + p.assists, reverse=True):
         print(player)
 
 
