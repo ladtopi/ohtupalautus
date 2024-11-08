@@ -45,6 +45,16 @@ Register With Username That Is Already In Use
     Submit Registration
     Registration Should Fail With Message    User with username testuser already exists
 
+Login After Successful Registration
+    Create User    testuser    testpassword1
+    Try Login As    testuser    testpassword1
+    Login Should Succeed
+
+Login After Failed Registration
+    Create User    a    a
+    Try Login As    a    a
+    Login Should Fail
+
 
 *** Keywords ***
 Reset Application Create User And Go To Register Page
@@ -70,3 +80,16 @@ Registration Should Fail With Message
     [Arguments]    ${message}
     Registration Page Should Be Open
     Page Should Contain    ${message}
+
+Try Login As
+    [Arguments]    ${username}    ${password}
+    Go To Login Page
+    Input Text    username    ${username}
+    Input Text    password    ${password}
+    Click Button    Login
+
+Login Should Succeed
+    Main Page Should Be Open
+
+Login Should Fail
+    Login Page Should Be Open
