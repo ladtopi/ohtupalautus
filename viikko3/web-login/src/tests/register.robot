@@ -3,61 +3,48 @@ Resource            resource.robot
 
 Suite Setup         Open And Configure Browser
 Suite Teardown      Close Browser
-Test Setup          Reset Application Create User And Go To Register Page
+Test Setup          Reset Application And Go To Register Page
 
 
 *** Test Cases ***
 Register With Valid Username And Password
-    Set Username    testuser
-    Set Password    testpassword1
-    Submit Registration
+    Try Registering As    testuser    testpassword1
     Registration Should Succeed
 
 Register With Too Short Username And Valid Password
-    Set Username    aa
-    Set Password    testpassword1
-    Submit Registration
+    Try Registering As    aa    testpassword1
     Registration Should Fail With Message    Username must be at least 3 characters long
 
 Register With Valid Username And Too Short Password
-    Set Username    testuser
-    Set Password    aa1
-    Submit Registration
+    Try Registering As    testuser    aa1
     Registration Should Fail With Message    Password must be at least 8 characters long
 
 Register With Valid Username And Invalid Password
-    Set Username    testuser
-    Set Password    testpassword
-    Submit Registration
+    Try Registering As    testuser    testpassword
     Registration Should Fail With Message    Password must contain both letters and numbers
 
 Register With Nonmatching Password And Password Confirmation
-    Set Username    testuser
-    Set Password    testpassword1    notthesame
-    Submit Registration
+    Try Registering As    testuser    testpassword1    notthesame
     Registration Should Fail With Message    Passwords do not match
 
 Register With Username That Is Already In Use
     Create User    testuser    testpassword1
-    Go To Register Page
-    Set Username    testuser
-    Set Password    testpassword1
-    Submit Registration
+    Try Registering As    testuser    testpassword2
     Registration Should Fail With Message    User with username testuser already exists
 
 Login After Successful Registration
-    Create User    testuser    testpassword1
+    Try Registering As    testuser    testpassword1
     Try Login As    testuser    testpassword1
     Login Should Succeed
 
 Login After Failed Registration
-    Create User    a    a
-    Try Login As    a    a
+    Try Registering As    aa    aa
+    Try Login As    aa    aa
     Login Should Fail
 
 
 *** Keywords ***
-Reset Application Create User And Go To Register Page
+Reset Application And Go To Register Page
     Reset Application
     Go To Register Page
 
@@ -87,6 +74,17 @@ Try Login As
     Input Text    username    ${username}
     Input Text    password    ${password}
     Click Button    Login
+
+Try Registering As
+    [Arguments]    ${username}    ${password}    ${password_confirmation}=${None}
+    Go To Register Page
+    Set Username    ${username}
+    IF    ${{$password_confirmation is None}}
+        Set Password    ${password}    ${password}
+    ELSE
+        Set Password    ${password}    ${password_confirmation}
+    END
+    Submit Registration
 
 Login Should Succeed
     Main Page Should Be Open
