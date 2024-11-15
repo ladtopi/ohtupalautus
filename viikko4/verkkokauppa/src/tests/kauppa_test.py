@@ -115,3 +115,12 @@ class TestKauppa(unittest.TestCase):
 
         # varmistetaan, että uusi viite on generoitu kolmesti
         self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 3)
+
+    def test_tuotteen_poisto_korista_palauttaa_sen_varastoon(self):
+        # tehdään ostokset
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(MAITO)
+        self.kauppa.poista_korista(MAITO)
+
+        # varmistetaan, että uusi viite on generoitu kolmesti
+        self.varasto_mock.palauta_varastoon.assert_called_with(Tuote(MAITO, "maito", 5))
