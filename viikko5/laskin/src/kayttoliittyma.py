@@ -15,13 +15,13 @@ class Kayttoliittyma:
     def __init__(self, sovelluslogiikka, root):
         self._sovelluslogiikka = sovelluslogiikka
         self._root = root
+        self._arvopino = []
         self._komennot = {
-            Komento.SUMMA: Summa(sovelluslogiikka, self._lue_syotearvo),
-            Komento.EROTUS: Erotus(sovelluslogiikka, self._lue_syotearvo),
-            Komento.NOLLAUS: Nollaa(sovelluslogiikka),
-            Komento.KUMOA: Kumoa(sovelluslogiikka, self._lue_edellinen_komento),
+            Komento.SUMMA: Summa(sovelluslogiikka, self._arvopino, self._lue_syotearvo),
+            Komento.EROTUS: Erotus(sovelluslogiikka, self._arvopino, self._lue_syotearvo),
+            Komento.NOLLAUS: Nollaa(sovelluslogiikka, self._arvopino),
+            Komento.KUMOA: Kumoa(sovelluslogiikka, self._arvopino),
         }
-        self._edellinen_komento = None
 
     def kaynnista(self):
         self._arvo_var = StringVar()
@@ -66,14 +66,13 @@ class Kayttoliittyma:
     def _lue_syotearvo(self):
         return int(self._syote_kentta.get())
 
-    def _lue_edellinen_komento(self):
-        return self._edellinen_komento
-
     def _suorita_komento(self, komento):
         self._komennot[komento].suorita()
-        self._edellinen_komento = self._komennot[komento]
 
-        self._kumoa_painike["state"] = constants.NORMAL
+        if not self._arvopino:
+            self._kumoa_painike["state"] = constants.DISABLED
+        else:
+            self._kumoa_painike["state"] = constants.NORMAL
 
         if self._sovelluslogiikka.arvo() == 0:
             self._nollaus_painike["state"] = constants.DISABLED
