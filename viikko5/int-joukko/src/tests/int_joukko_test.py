@@ -54,7 +54,7 @@ class TestIntJoukko(unittest.TestCase):
         self.joukko.poista(10)
         self.joukko.lisaa(99)
 
-        vastaus = self.joukko.to_int_list()
+        vastaus = self.joukko.lista()
 
         self.assertListEqual(sorted(vastaus), odotettu)
 
@@ -84,7 +84,7 @@ class TestIntJoukko(unittest.TestCase):
         toka = self.tee_joukko(3, 4)
 
         tulos = IntJoukko.yhdiste(eka, toka)
-        vastauksen_luvut = tulos.to_int_list()
+        vastauksen_luvut = tulos.lista()
 
         odotettu = [1, 2, 3, 4]
 
@@ -95,7 +95,7 @@ class TestIntJoukko(unittest.TestCase):
         toka = self.tee_joukko(2, 3, 4)
 
         tulos = IntJoukko.leikkaus(eka, toka)
-        vastauksen_luvut = tulos.to_int_list()
+        vastauksen_luvut = tulos.lista()
 
         odotettu = [2]
 
@@ -106,7 +106,7 @@ class TestIntJoukko(unittest.TestCase):
         toka = self.tee_joukko(2, 3, 4)
 
         tulos = IntJoukko.erotus(eka, toka)
-        vastauksen_luvut = tulos.to_int_list()
+        vastauksen_luvut = tulos.lista()
 
         odotettu = [1, 5, 6]
 
