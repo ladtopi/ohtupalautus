@@ -1,21 +1,21 @@
-from matchers import All, And, HasAtLeast, HasFewerThan, PlaysIn
+from matchers import All, And, HasAtLeast, HasFewerThan, Or, PlaysIn
 
 
 class QueryBuilder:
-    def __init__(self):
-        self.matchers = [All()]
+    def __init__(self, matchers=[All()]):
+        self._matchers = matchers
 
     def build(self):
-        return And(*self.matchers)
+        return And(*self._matchers)
 
     def plays_in(self, team):
-        self.matchers.append(PlaysIn(team))
-        return self
+        return QueryBuilder(matchers=[*self._matchers, PlaysIn(team)])
 
     def has_at_least(self, value, attr):
-        self.matchers.append(HasAtLeast(value, attr))
-        return self
+        return QueryBuilder(matchers=[*self._matchers, HasAtLeast(value, attr)])
 
     def has_fewer_than(self, value, attr):
-        self.matchers.append(HasFewerThan(value, attr))
-        return self
+        return QueryBuilder(matchers=[*self._matchers, HasFewerThan(value, attr)])
+
+    def one_of(self, *matchers):
+        return QueryBuilder(matchers=[Or(*matchers)])
